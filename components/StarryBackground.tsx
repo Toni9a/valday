@@ -40,23 +40,23 @@ const StarryBackground: React.FC = () => {
     // Generate Shooting Stars
     const newShootingStars: ShootingStar[] = [];
     for (let i = 0; i < 8; i++) {
-        newShootingStars.push({
-            id: i,
-            top: `${Math.random() * 60}%`, // Start mostly in upper half
-            left: `${Math.random() * 100}%`,
-            delay: `${Math.random() * 10 + 2}s` // More frequent
-        });
+      newShootingStars.push({
+        id: i,
+        top: `${Math.random() * 60}%`, // Start mostly in upper half
+        left: `${Math.random() * 100}%`,
+        delay: `${Math.random() * 10 + 2}s` // More frequent
+      });
     }
     setShootingStars(newShootingStars);
   }, []);
 
   return (
     <div className="fixed inset-0 z-0 bg-black overflow-hidden pointer-events-none">
-      
-      {/* 1. Pink Supernova Gradients - Increased Opacity & Size */}
+
+      {/* 1. Pink Supernova Gradients */}
       <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-pink-700/40 rounded-full blur-[120px] animate-pulse-slow mix-blend-screen" />
       <div className="absolute bottom-[10%] right-[-10%] w-[50%] h-[50%] bg-purple-800/40 rounded-full blur-[120px] animate-pulse-slow delay-1000 mix-blend-screen" />
-      
+
       {/* 2. Aurora Flashes */}
       <div className="absolute top-[30%] right-[20%] w-[30%] h-[30%] bg-yellow-600/20 rounded-full blur-[100px] animate-pulse-slower mix-blend-screen" />
       <div className="absolute bottom-[20%] left-[20%] w-[30%] h-[30%] bg-emerald-600/20 rounded-full blur-[100px] animate-pulse-slower delay-2000 mix-blend-screen" />
@@ -80,16 +80,16 @@ const StarryBackground: React.FC = () => {
 
       {/* 4. Shooting Stars */}
       {shootingStars.map((star) => (
-         <div 
-            key={star.id}
-            className="absolute h-[2px] w-[120px] bg-gradient-to-r from-transparent via-white to-transparent opacity-0"
-            style={{
-                top: star.top,
-                left: star.left,
-                animation: `shooting-star 4s linear infinite`,
-                animationDelay: star.delay
-            }}
-         />
+        <div
+          key={star.id}
+          className="absolute h-[2px] w-[120px] bg-gradient-to-r from-transparent via-white to-transparent opacity-0"
+          style={{
+            top: star.top,
+            left: star.left,
+            animation: `shooting-star 4s linear infinite`,
+            animationDelay: star.delay
+          }}
+        />
       ))}
 
       <style>{`

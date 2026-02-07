@@ -27,7 +27,7 @@ const Intro: React.FC<IntroProps> = ({ onComplete }) => {
     if (step === 'GREETING') {
       const timer = setTimeout(() => {
         setStep('MAIN');
-      }, 4000); 
+      }, 4000);
       return () => clearTimeout(timer);
     }
   }, [step]);
@@ -52,7 +52,7 @@ const Intro: React.FC<IntroProps> = ({ onComplete }) => {
   // Greeting View
   if (step === 'GREETING') {
     return (
-      <motion.div 
+      <motion.div
         className="flex flex-col items-center justify-center min-h-screen px-6 text-center z-50 bg-black absolute inset-0"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -60,15 +60,15 @@ const Intro: React.FC<IntroProps> = ({ onComplete }) => {
         transition={{ duration: 1 }}
       >
         <motion.div
-           initial={{ opacity: 0, scale: 0.9 }}
-           animate={{ opacity: 1, scale: 1 }}
-           transition={{ duration: 1.5, ease: "easeOut" }}
-           className="font-handwriting text-3xl md:text-5xl text-pink-200"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.5, ease: "easeOut" }}
+          className="font-handwriting text-3xl md:text-5xl text-pink-200"
         >
-          Hey {RECIPIENT_NAME}, <br/>
+          Hey {RECIPIENT_NAME}, <br />
           this is something I made for you...
         </motion.div>
-        <motion.div 
+        <motion.div
           className="mt-8 text-xl text-gray-400 font-light"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -83,7 +83,7 @@ const Intro: React.FC<IntroProps> = ({ onComplete }) => {
   // Main Writing View
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-6 text-center z-10 relative overflow-hidden">
-      
+
       <AnimatePresence mode="wait">
         {currentLineIndex < lines.length && (
           <motion.div
@@ -94,7 +94,7 @@ const Intro: React.FC<IntroProps> = ({ onComplete }) => {
             transition={{ duration: 0.5 }}
             className="relative h-32 flex items-center justify-center w-full"
           >
-             {/* 
+            {/* 
                 Stable Writing Animation:
                 1. Render the text invisibly (opacity-0) to establish the full width and center it.
                 2. Overlay an absolute container that animates width 0->100% to 'reveal' the visible text.
@@ -119,15 +119,15 @@ const Intro: React.FC<IntroProps> = ({ onComplete }) => {
 
                 {/* Pen Tip - Following the right edge of this container */}
                 <div className="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2">
-                   <motion.div
+                  <motion.div
                     initial={{ opacity: 1 }}
                     animate={{ opacity: [1, 1, 0] }}
                     transition={{ times: [0, 0.95, 1], duration: 3 }}
-                   >
-                     <span className="text-3xl md:text-5xl -mt-8 block animate-writing">
-                       🖊️
-                     </span>
-                   </motion.div>
+                  >
+                    <span className="text-3xl md:text-5xl -mt-8 block animate-writing">
+                      🖊️
+                    </span>
+                  </motion.div>
                 </div>
               </motion.div>
             </div>

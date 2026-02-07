@@ -2,6 +2,7 @@ export enum PageState {
   INTRO = 'INTRO',
   INTERVAL = 'INTERVAL',
   GAME = 'GAME',
+  WELL_DONE = 'WELL_DONE', // New intermediate state
   QUESTION = 'QUESTION',
   SUCCESS = 'SUCCESS'
 }

@@ -29,7 +29,7 @@ const PhotoGame: React.FC<PhotoGameProps> = ({ onComplete }) => {
   const [currentPromptIndex, setCurrentPromptIndex] = useState(0);
 
   // 34 cards for the 7-column heart shape
-  const TOTAL_CARDS = 34; 
+  const TOTAL_CARDS = 34;
   const PAIRS_NEEDED = 17;
 
   // Heart Grid Layout (7 columns)
@@ -54,10 +54,10 @@ const PhotoGame: React.FC<PhotoGameProps> = ({ onComplete }) => {
   useEffect(() => {
     // We need 17 pairs.
     // Repeat photos enough times to cover the need
-    const basePhotos = [...MEMORY_PHOTOS, ...MEMORY_PHOTOS, ...MEMORY_PHOTOS, ...MEMORY_PHOTOS]; 
+    const basePhotos = [...MEMORY_PHOTOS, ...MEMORY_PHOTOS, ...MEMORY_PHOTOS, ...MEMORY_PHOTOS];
     const selectedPhotos = basePhotos.slice(0, PAIRS_NEEDED);
     const gameDeck: PhotoPair[] = [...selectedPhotos, ...selectedPhotos];
-    
+
     const shuffled = gameDeck
       .map((value) => ({ value, sort: Math.random() }))
       .sort((a, b) => a.sort - b.sort)
@@ -68,7 +68,7 @@ const PhotoGame: React.FC<PhotoGameProps> = ({ onComplete }) => {
         isFlipped: false,
         isMatched: false
       }));
-      
+
     setCards(shuffled);
   }, []);
 
@@ -80,9 +80,9 @@ const PhotoGame: React.FC<PhotoGameProps> = ({ onComplete }) => {
       const secondCard = cards[secondIndex];
 
       if (firstCard.pairId === secondCard.pairId) {
-        setCards(prev => prev.map((card, index) => 
-          index === firstIndex || index === secondIndex 
-            ? { ...card, isMatched: true, isFlipped: true } 
+        setCards(prev => prev.map((card, index) =>
+          index === firstIndex || index === secondIndex
+            ? { ...card, isMatched: true, isFlipped: true }
             : card
         ));
         setMatchedCount(prev => prev + 1);
@@ -90,9 +90,9 @@ const PhotoGame: React.FC<PhotoGameProps> = ({ onComplete }) => {
         setIsProcessing(false);
       } else {
         setTimeout(() => {
-          setCards(prev => prev.map((card, index) => 
-            index === firstIndex || index === secondIndex 
-              ? { ...card, isFlipped: false } 
+          setCards(prev => prev.map((card, index) =>
+            index === firstIndex || index === secondIndex
+              ? { ...card, isFlipped: false }
               : card
           ));
           setFlippedIndices([]);
@@ -123,7 +123,7 @@ const PhotoGame: React.FC<PhotoGameProps> = ({ onComplete }) => {
   let cardCounter = 0;
 
   return (
-    <motion.div 
+    <motion.div
       className="flex flex-col items-center justify-center min-h-screen p-4 z-10 relative w-full overflow-y-auto"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -134,11 +134,11 @@ const PhotoGame: React.FC<PhotoGameProps> = ({ onComplete }) => {
           <h3 className="text-3xl font-handwriting text-pink-200 drop-shadow-md">Match the memories</h3>
           <p className="text-xs text-pink-200/60 font-sans tracking-widest mt-1">FIND ALL PAIRS</p>
         </div>
-        <button 
-            onClick={onComplete}
-            className="px-4 py-1.5 bg-white/5 text-white/40 text-xs rounded-full border border-white/10 hover:bg-white/10 hover:text-white/80 transition-all backdrop-blur-md"
+        <button
+          onClick={onComplete}
+          className="px-4 py-1.5 bg-white/5 text-white/40 text-xs rounded-full border border-white/10 hover:bg-white/10 hover:text-white/80 transition-all backdrop-blur-md"
         >
-            Skip
+          Skip
         </button>
       </div>
 
@@ -156,7 +156,7 @@ const PhotoGame: React.FC<PhotoGameProps> = ({ onComplete }) => {
 
           const currentCard = cards[cardCounter];
           const currentCardIndex = cardCounter;
-          cardCounter++; 
+          cardCounter++;
 
           if (!currentCard) return null;
 
@@ -171,30 +171,30 @@ const PhotoGame: React.FC<PhotoGameProps> = ({ onComplete }) => {
               onClick={() => handleCardClick(currentCardIndex)}
             >
               <div className="absolute inset-0 w-full h-full p-[1px]"> {/* Tiny padding for separation */}
-                <div 
+                <div
                   className={`w-full h-full relative preserve-3d transition-transform duration-500 ${currentCard.isFlipped ? 'rotate-y-180' : ''}`}
                   style={{ transformStyle: 'preserve-3d', transform: currentCard.isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)' }}
                 >
                   {/* Back of Card (Unflipped) */}
-                  <div 
+                  <div
                     className="absolute inset-0 backface-hidden bg-pink-900/20 backdrop-blur-md rounded-lg border border-pink-500/20 flex items-center justify-center hover:bg-pink-800/30 transition-colors shadow-inner group"
                     style={{ backfaceVisibility: 'hidden' }}
                   >
                   </div>
 
                   {/* Front of Card (Image) */}
-                  <div 
+                  <div
                     className={`absolute inset-0 backface-hidden rounded-lg overflow-hidden border ${currentCard.isMatched ? 'border-pink-400 shadow-[0_0_10px_rgba(236,72,153,0.5)]' : 'border-white/30'}`}
                     style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
                   >
-                    <img 
-                      src={currentCard.imageUrl} 
-                      alt="Memory" 
+                    <img
+                      src={currentCard.imageUrl}
+                      alt="Memory"
                       className="w-full h-full object-cover block"
                     />
                     {/* Matched overlay */}
                     {currentCard.isMatched && (
-                        <div className="absolute inset-0 bg-pink-500/10 z-10 animate-pulse" />
+                      <div className="absolute inset-0 bg-pink-500/10 z-10 animate-pulse" />
                     )}
                   </div>
                 </div>
@@ -207,16 +207,16 @@ const PhotoGame: React.FC<PhotoGameProps> = ({ onComplete }) => {
       {/* Fading Memory Prompts */}
       <div className="mt-8 h-8 flex items-center justify-center pointer-events-none w-full max-w-[500px]">
         <AnimatePresence mode="wait">
-            <motion.div
-                key={currentPromptIndex}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.8 }}
-                className="text-pink-100/80 text-xl font-handwriting tracking-wide drop-shadow-[0_0_10px_rgba(236,72,153,0.3)] text-center px-4"
-            >
-                {MEMORY_PROMPTS[currentPromptIndex]}
-            </motion.div>
+          <motion.div
+            key={currentPromptIndex}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.8 }}
+            className="text-pink-100/80 text-xl font-handwriting tracking-wide drop-shadow-[0_0_10px_rgba(236,72,153,0.3)] text-center px-4"
+          >
+            {MEMORY_PROMPTS[currentPromptIndex]}
+          </motion.div>
         </AnimatePresence>
       </div>
     </motion.div>
