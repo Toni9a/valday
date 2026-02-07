@@ -7,11 +7,26 @@ interface PhotoGameProps {
   onComplete: () => void;
 }
 
+const MEMORY_PROMPTS = [
+  "When you proposed",
+  "Exploring the Jungle & bridges",
+  "Vibing in Marrakesh",
+  "Agbdada fly",
+  "One drink and you were gone",
+  "TikTok tryouts",
+  "Grad standout",
+  "Quadbikingg",
+  "SZA twin",
+  "Meme",
+  "A year ago today"
+];
+
 const PhotoGame: React.FC<PhotoGameProps> = ({ onComplete }) => {
   const [cards, setCards] = useState<Card[]>([]);
   const [flippedIndices, setFlippedIndices] = useState<number[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [matchedCount, setMatchedCount] = useState(0);
+  const [currentPromptIndex, setCurrentPromptIndex] = useState(0);
 
   // 34 cards for the 7-column heart shape
   const TOTAL_CARDS = 34; 
@@ -27,6 +42,14 @@ const PhotoGame: React.FC<PhotoGameProps> = ({ onComplete }) => {
     0, 0, 1, 1, 1, 0, 0, // Row 5
     0, 0, 0, 1, 0, 0, 0  // Row 6
   ];
+
+  useEffect(() => {
+    // Cycle through prompts every 4 seconds
+    const interval = setInterval(() => {
+      setCurrentPromptIndex((prev) => (prev + 1) % MEMORY_PROMPTS.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     // We need 17 pairs.
@@ -181,18 +204,20 @@ const PhotoGame: React.FC<PhotoGameProps> = ({ onComplete }) => {
         })}
       </div>
 
-      <div className="mt-8 flex flex-col items-center gap-2">
-        <div className="w-full max-w-[200px] h-1 bg-gray-800 rounded-full overflow-hidden">
-            <motion.div 
-                className="h-full bg-pink-500"
-                initial={{ width: 0 }}
-                animate={{ width: `${(matchedCount / PAIRS_NEEDED) * 100}%` }}
-                transition={{ duration: 0.5 }}
-            />
-        </div>
-        <div className="text-pink-200/50 text-xs font-mono tracking-widest">
-            {matchedCount} / {PAIRS_NEEDED} PAIRS FOUND
-        </div>
+      {/* Fading Memory Prompts */}
+      <div className="mt-8 h-8 flex items-center justify-center pointer-events-none w-full max-w-[500px]">
+        <AnimatePresence mode="wait">
+            <motion.div
+                key={currentPromptIndex}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.8 }}
+                className="text-pink-100/80 text-xl font-handwriting tracking-wide drop-shadow-[0_0_10px_rgba(236,72,153,0.3)] text-center px-4"
+            >
+                {MEMORY_PROMPTS[currentPromptIndex]}
+            </motion.div>
+        </AnimatePresence>
       </div>
     </motion.div>
   );
