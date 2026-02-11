@@ -7,7 +7,8 @@ interface IntroProps {
 }
 
 const Intro: React.FC<IntroProps> = ({ onComplete }) => {
-  const [step, setStep] = useState<'GREETING' | 'MAIN'>('GREETING');
+  const [step, setStep] = useState<'GREETING' | 'MAIN' | 'PHOTO_NOTE'>('GREETING');
+  const [showClickMe, setShowClickMe] = useState(false);
 
   const lines = [
     `I love you so much ${RECIPIENT_NAME},`,
@@ -20,7 +21,6 @@ const Intro: React.FC<IntroProps> = ({ onComplete }) => {
   ];
 
   const [currentLineIndex, setCurrentLineIndex] = useState(0);
-  const [showButton, setShowButton] = useState(false);
 
   // 1. Initial Greeting Screen
   useEffect(() => {
@@ -36,7 +36,7 @@ const Intro: React.FC<IntroProps> = ({ onComplete }) => {
   useEffect(() => {
     if (step === 'MAIN') {
       if (currentLineIndex >= lines.length) {
-        setShowButton(true);
+        setStep('PHOTO_NOTE');
         return;
       }
 
@@ -48,6 +48,16 @@ const Intro: React.FC<IntroProps> = ({ onComplete }) => {
       return () => clearTimeout(timer);
     }
   }, [currentLineIndex, lines.length, step]);
+
+  // 3. Photo Note Timer
+  useEffect(() => {
+    if (step === 'PHOTO_NOTE') {
+      const timer = setTimeout(() => {
+        setShowClickMe(true);
+      }, 30000); // 30 seconds wait
+      return () => clearTimeout(timer);
+    }
+  }, [step]);
 
   // Greeting View
   if (step === 'GREETING') {
@@ -82,10 +92,10 @@ const Intro: React.FC<IntroProps> = ({ onComplete }) => {
 
   // Main Writing View
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen px-6 text-center z-10 relative overflow-hidden">
+    <div className="flex flex-col items-center justify-center min-h-screen px-6 py-20 text-center z-10 relative overflow-y-auto">
 
       <AnimatePresence mode="wait">
-        {currentLineIndex < lines.length && (
+        {step === 'MAIN' && currentLineIndex < lines.length && (
           <motion.div
             key={currentLineIndex}
             initial={{ opacity: 0 }}
@@ -133,6 +143,104 @@ const Intro: React.FC<IntroProps> = ({ onComplete }) => {
             </div>
           </motion.div>
         )}
+
+        {step === 'PHOTO_NOTE' && (
+          <motion.div
+            key="photo-note"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1 }}
+            className="flex flex-col items-center justify-center w-full max-w-4xl"
+          >
+            <motion.h2
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 1 }}
+              className="font-handwriting text-3xl md:text-5xl text-pink-200 mb-12"
+            >
+              handwritten, as requested
+            </motion.h2>
+
+            {/* Envelope Container */}
+            <div className="relative w-80 h-56 md:w-[500px] md:h-[320px]">
+
+              {/* Envelope Back */}
+              <motion.div
+                initial={{ opacity: 1, y: 0 }}
+                animate={{ opacity: 0, y: 50 }}
+                transition={{ delay: 5, duration: 1.5, ease: "easeInOut" }}
+                className="absolute inset-0 bg-pink-50 rounded-lg shadow-xl border border-pink-100"
+              />
+
+              {/* The Note (Sliding out) */}
+              <motion.div
+                initial={{ y: 0, opacity: 0, rotate: 0 }}
+                animate={{ y: -220, opacity: 1, rotate: -2 }}
+                transition={{
+                  delay: 2.5,
+                  duration: 2.5,
+                  ease: "easeOut"
+                }}
+                className="absolute left-6 right-6 top-6 bottom-6 z-20"
+              >
+                <div className="w-full h-[450px] md:h-[600px] overflow-hidden shadow-2xl rounded-sm border border-gray-200">
+                  <img
+                    src="/handwritten_note.png"
+                    alt="Handwritten Note"
+                    className="w-full h-full object-cover bg-white"
+                  />
+                </div>
+              </motion.div>
+
+              {/* Envelope Flap (Top) */}
+              <motion.div
+                initial={{ rotateX: 0, opacity: 1, y: 0 }}
+                animate={{ rotateX: 180, opacity: 0, y: 50 }}
+                transition={{
+                  rotateX: { delay: 1.5, duration: 1.2, ease: "easeInOut" },
+                  opacity: { delay: 5, duration: 1.5 },
+                  y: { delay: 5, duration: 1.5 }
+                }}
+                className="absolute top-0 left-0 right-0 h-1/2 bg-pink-100 rounded-t-lg shadow-md z-40 origin-top"
+                style={{
+                  clipPath: "polygon(0 0, 100% 0, 50% 100%)",
+                  borderBottom: "1px solid rgba(244, 114, 182, 0.2)"
+                }}
+              />
+
+              {/* Envelope Front Layer (Pocket) */}
+              <motion.div
+                initial={{ opacity: 1, y: 0 }}
+                animate={{ opacity: 0, y: 50 }}
+                transition={{ delay: 5, duration: 1.5, ease: "easeInOut" }}
+                className="absolute inset-0 bg-white/90 rounded-lg z-30 shadow-inner"
+                style={{
+                  clipPath: "polygon(0 100%, 0 0, 50% 50%, 100% 0, 100% 100%)",
+                  background: "linear-gradient(to bottom, #fff5f7, #fdf2f8)"
+                }}
+              />
+
+              {/* Envelope Bottom Seal */}
+              <motion.div
+                initial={{ opacity: 1, y: 0 }}
+                animate={{ opacity: 0, y: 50 }}
+                transition={{ delay: 5, duration: 1.5, ease: "easeInOut" }}
+                className="absolute bottom-0 left-0 right-0 h-1/2 bg-pink-50 z-30 flex items-end justify-center pb-6"
+                style={{ clipPath: "polygon(0 100%, 50% 50%, 100% 100%)" }}
+              >
+                <motion.span
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="text-pink-400 text-3xl drop-shadow-sm"
+                >
+                  ❤️
+                </motion.span>
+              </motion.div>
+
+            </div>
+          </motion.div>
+        )}
       </AnimatePresence>
 
       <style>{`
@@ -146,7 +254,7 @@ const Intro: React.FC<IntroProps> = ({ onComplete }) => {
         }
       `}</style>
 
-      {showButton && (
+      {showClickMe && (
         <motion.button
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -154,7 +262,7 @@ const Intro: React.FC<IntroProps> = ({ onComplete }) => {
           whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(236, 72, 153, 0.6)" }}
           whileTap={{ scale: 0.95 }}
           onClick={onComplete}
-          className="mt-12 px-10 py-4 bg-transparent border border-pink-500/50 text-pink-100 font-handwriting text-2xl md:text-3xl rounded-full shadow-[0_0_15px_rgba(236,72,153,0.3)] backdrop-blur-sm relative group overflow-hidden"
+          className="mt-40 mb-12 px-10 py-4 bg-transparent border border-pink-500/50 text-pink-100 font-handwriting text-2xl md:text-3xl rounded-full shadow-[0_0_15px_rgba(236,72,153,0.3)] backdrop-blur-sm relative group overflow-hidden shrink-0"
         >
           <span className="relative z-10 flex items-center gap-2">
             Click Me! <span className="animate-pulse">❤️</span>

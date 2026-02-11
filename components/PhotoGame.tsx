@@ -134,12 +134,6 @@ const PhotoGame: React.FC<PhotoGameProps> = ({ onComplete }) => {
           <h3 className="text-3xl font-handwriting text-pink-200 drop-shadow-md">Match the memories</h3>
           <p className="text-xs text-pink-200/60 font-sans tracking-widest mt-1">FIND ALL PAIRS</p>
         </div>
-        <button
-          onClick={onComplete}
-          className="px-4 py-1.5 bg-white/5 text-white/40 text-xs rounded-full border border-white/10 hover:bg-white/10 hover:text-white/80 transition-all backdrop-blur-md"
-        >
-          Skip
-        </button>
       </div>
 
       {/* 
