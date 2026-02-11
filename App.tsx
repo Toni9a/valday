@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import StarryBackground from './components/StarryBackground';
 import Intro from './components/Intro';
@@ -9,9 +9,24 @@ import Success from './components/Success';
 import WellDone from './components/WellDone';
 import BackgroundMusic from './components/BackgroundMusic';
 import { PageState } from './types';
+import { MEMORY_PHOTOS } from './constants';
 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<PageState>(PageState.INTRO);
+
+  // Preload Images
+  useEffect(() => {
+    const imagesToPreload = [
+      '/handwritten_note.png',
+      '/images/cattt.gif',
+      ...MEMORY_PHOTOS.map(p => p.url)
+    ];
+
+    imagesToPreload.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
 
   const renderPage = () => {
     switch (currentPage) {

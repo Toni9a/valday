@@ -27,7 +27,7 @@ const Intro: React.FC<IntroProps> = ({ onComplete }) => {
     if (step === 'GREETING') {
       const timer = setTimeout(() => {
         setStep('MAIN');
-      }, 4000);
+      }, 3000); // 3 seconds instead of 4
       return () => clearTimeout(timer);
     }
   }, [step]);
@@ -40,7 +40,7 @@ const Intro: React.FC<IntroProps> = ({ onComplete }) => {
         return;
       }
 
-      const duration = 4000; // Hold each line
+      const duration = 3000; // Speed up: 3s instead of 4s
       const timer = setTimeout(() => {
         setCurrentLineIndex((prev) => prev + 1);
       }, duration);
@@ -63,11 +63,15 @@ const Intro: React.FC<IntroProps> = ({ onComplete }) => {
   if (step === 'GREETING') {
     return (
       <motion.div
-        className="flex flex-col items-center justify-center min-h-screen px-6 text-center z-50 bg-black absolute inset-0"
+        className="flex flex-col items-center justify-center min-h-screen px-6 text-center z-50 bg-black absolute inset-0 cursor-pointer"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 1 }}
+        onClick={() => {
+          // Touching/Clicking anywhere here will trigger the BackgroundMusic's window listeners
+          setStep('MAIN');
+        }}
       >
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
@@ -82,9 +86,17 @@ const Intro: React.FC<IntroProps> = ({ onComplete }) => {
           className="mt-8 text-xl text-gray-400 font-light"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 2, duration: 1 }}
+          transition={{ delay: 1.5, duration: 1 }}
         >
           ~ Love, Timi
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0, 1, 0] }}
+          transition={{ delay: 2, duration: 2, repeat: Infinity }}
+          className="mt-12 text-pink-500/50 text-sm font-sans tracking-widest uppercase"
+        >
+          ( Tap to begin )
         </motion.div>
       </motion.div>
     );
@@ -92,7 +104,7 @@ const Intro: React.FC<IntroProps> = ({ onComplete }) => {
 
   // Main Writing View
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen px-6 py-20 text-center z-10 relative overflow-y-auto">
+    <div className="flex flex-col items-center justify-center min-h-screen px-4 py-10 text-center z-10 relative overflow-y-auto">
 
       <AnimatePresence mode="wait">
         {step === 'MAIN' && currentLineIndex < lines.length && (
@@ -102,17 +114,11 @@ const Intro: React.FC<IntroProps> = ({ onComplete }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
-            className="relative h-32 flex items-center justify-center w-full"
+            className="relative h-24 md:h-32 flex items-center justify-center w-full"
           >
-            {/* 
-                Stable Writing Animation:
-                1. Render the text invisibly (opacity-0) to establish the full width and center it.
-                2. Overlay an absolute container that animates width 0->100% to 'reveal' the visible text.
-                3. The pen attaches to the right edge of the revealing container.
-             */}
             <div className="relative inline-block">
               {/* Ghost Text for Layout */}
-              <span className="text-2xl md:text-4xl lg:text-5xl font-handwriting text-transparent opacity-0 whitespace-nowrap px-2">
+              <span className="text-xl md:text-4xl lg:text-5xl font-handwriting text-transparent opacity-0 whitespace-nowrap px-2">
                 {lines[currentLineIndex]}
               </span>
 
@@ -121,9 +127,9 @@ const Intro: React.FC<IntroProps> = ({ onComplete }) => {
                 className="absolute top-0 left-0 h-full overflow-hidden whitespace-nowrap"
                 initial={{ width: 0 }}
                 animate={{ width: "100%" }}
-                transition={{ duration: 3, ease: "linear" }}
+                transition={{ duration: 2.5, ease: "linear" }}
               >
-                <span className="text-2xl md:text-4xl lg:text-5xl font-handwriting text-blue-200 leading-relaxed drop-shadow-[0_0_10px_rgba(59,130,246,0.5)] px-2">
+                <span className="text-xl md:text-4xl lg:text-5xl font-handwriting text-blue-200 leading-relaxed drop-shadow-[0_0_10px_rgba(59,130,246,0.5)] px-2">
                   {lines[currentLineIndex]}
                 </span>
 
@@ -132,9 +138,9 @@ const Intro: React.FC<IntroProps> = ({ onComplete }) => {
                   <motion.div
                     initial={{ opacity: 1 }}
                     animate={{ opacity: [1, 1, 0] }}
-                    transition={{ times: [0, 0.95, 1], duration: 3 }}
+                    transition={{ times: [0, 0.95, 1], duration: 2.5 }}
                   >
-                    <span className="text-3xl md:text-5xl -mt-8 block animate-writing">
+                    <span className="text-2xl md:text-5xl -mt-6 md:-mt-8 block animate-writing">
                       🖊️
                     </span>
                   </motion.div>
@@ -151,19 +157,19 @@ const Intro: React.FC<IntroProps> = ({ onComplete }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 1 }}
-            className="flex flex-col items-center justify-center w-full max-w-4xl"
+            className="flex flex-col items-center justify-center w-full max-w-4xl pt-10"
           >
             <motion.h2
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 1 }}
-              className="font-handwriting text-3xl md:text-5xl text-pink-200 mb-12"
+              className="font-handwriting font-bold text-2xl md:text-5xl text-pink-200 mb-8 px-4"
             >
               handwritten, as requested
             </motion.h2>
 
             {/* Envelope Container */}
-            <div className="relative w-80 h-56 md:w-[500px] md:h-[320px]">
+            <div className="relative w-[90vw] h-[60vw] max-w-[500px] md:h-[320px]">
 
               {/* Envelope Back */}
               <motion.div
@@ -173,22 +179,22 @@ const Intro: React.FC<IntroProps> = ({ onComplete }) => {
                 className="absolute inset-0 bg-pink-50 rounded-lg shadow-xl border border-pink-100"
               />
 
-              {/* The Note (Sliding out) */}
+              {/* The Note (Sliding out) - Optimization for Scroll/View */}
               <motion.div
                 initial={{ y: 0, opacity: 0, rotate: 0 }}
-                animate={{ y: -220, opacity: 1, rotate: -2 }}
+                animate={{ y: -180, opacity: 1, rotate: -1 }}
                 transition={{
                   delay: 2.5,
                   duration: 2.5,
                   ease: "easeOut"
                 }}
-                className="absolute left-6 right-6 top-6 bottom-6 z-20"
+                className="absolute left-4 right-4 top-4 bottom-4 z-20"
               >
-                <div className="w-full h-[450px] md:h-[600px] overflow-hidden shadow-2xl rounded-sm border border-gray-200">
+                <div className="w-full h-[70vh] max-h-[600px] md:h-[600px] overflow-hidden shadow-2xl rounded-sm border border-gray-100 bg-white">
                   <img
                     src="/handwritten_note.png"
                     alt="Handwritten Note"
-                    className="w-full h-full object-cover bg-white"
+                    className="w-full h-full object-contain p-2"
                   />
                 </div>
               </motion.div>
@@ -262,7 +268,7 @@ const Intro: React.FC<IntroProps> = ({ onComplete }) => {
           whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(236, 72, 153, 0.6)" }}
           whileTap={{ scale: 0.95 }}
           onClick={onComplete}
-          className="mt-40 mb-12 px-10 py-4 bg-transparent border border-pink-500/50 text-pink-100 font-handwriting text-2xl md:text-3xl rounded-full shadow-[0_0_15px_rgba(236,72,153,0.3)] backdrop-blur-sm relative group overflow-hidden shrink-0"
+          className="mt-64 md:mt-40 mb-20 px-10 py-4 bg-transparent border border-pink-500/50 text-pink-100 font-handwriting text-2xl md:text-3xl rounded-full shadow-[0_0_15px_rgba(236,72,153,0.3)] backdrop-blur-sm relative group overflow-hidden shrink-0"
         >
           <span className="relative z-10 flex items-center gap-2">
             Click Me! <span className="animate-pulse">❤️</span>
